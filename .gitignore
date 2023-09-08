@@ -8,7 +8,6 @@
 */dist
 */out
 */.cache
-*/public
 .DS_Store
 
 # testing
