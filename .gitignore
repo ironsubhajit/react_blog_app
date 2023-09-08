@@ -1,0 +1,41 @@
+# Dependency directories
+node_modules/
+npm-debug.log*
+
+# Build directories
+build/
+dist/
+out/
+.cache/
+public/
+.DS_Store
+
+# Environment files
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Log files
+*.log
+
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Miscellaneous
+*.tmp
+*.bak
+*.backup
+*.sass-cache
+*.sublime-workspace
+*.sublime-project
