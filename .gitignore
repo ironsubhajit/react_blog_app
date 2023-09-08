@@ -1,23 +1,26 @@
 # Dependency directories
-node_modules/
-npm-debug.log*
+*/node_modules
+*/npm-debug.log*
 
 # Build directories
-build/
-dist/
-out/
-.cache/
-public/
+*/build
+*/dist
+*/out
+*/.cache
+*/public
 .DS_Store
 
+# testing
+*/coverage
+
 # Environment files
-.env.local
-.env.development
-.env.test
-.env.production
+*/.env.local
+*/.env.development
+*/.env.test
+*/.env.production
 
 # Log files
-*.log
+*/*.log
 
 # Editor directories and files
 .idea/
@@ -37,5 +40,3 @@ Thumbs.db
 *.bak
 *.backup
 *.sass-cache
-*.sublime-workspace
-*.sublime-project
