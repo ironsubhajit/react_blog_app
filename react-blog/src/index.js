@@ -1,12 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import "./index.css";
 import App from "./App";
 import About from "./pages/About";
 import ErrorPage from "./pages/Error";
 import reportWebVitals from "./reportWebVitals";
-
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import BlogsList from "./pages/BlogsList";
+import CreateBlog from "./pages/CreateBlog";
+import UpdateBlog from "./pages/UpdateBlog";
 
 const router = createBrowserRouter([
   {
@@ -15,8 +18,20 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/about",
+    path: "about",
     element: <About />,
+  },
+  {
+    path: "blogs",
+    element: <BlogsList />,
+  },
+  {
+    path: "add-blog",
+    element: <CreateBlog />,
+  },
+  {
+    path: "edit-blog",
+    element: <UpdateBlog />,
   },
 ]);
 
