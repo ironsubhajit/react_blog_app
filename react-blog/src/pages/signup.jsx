@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Base from "../components/Base";
 import { Link } from "react-router-dom";
+import validator from "validator";
 import {
   Card,
   CardBody,
@@ -12,21 +13,67 @@ import {
   CardHeader,
   Form,
   FormGroup,
+  FormFeedback,
   Label,
   Input,
 } from "reactstrap";
 
 const Signup = () => {
-  const defaultState = {
+  const defaultUserState = {
     name: "",
     email: "",
     password: "",
     about: "",
   };
 
+  const defaultErrorState = {
+    nameError: [],
+    emailError: [],
+    passwordError: [],
+    isError: false,
+  };
+
+  // User state data
   const [userStateData, setUserStateData] = useState({
-    ...defaultState,
+    ...defaultUserState,
   });
+
+  // Error state
+  const [errorStateData, setErrorStateData] = useState({
+    ...defaultErrorState,
+  });
+
+  // signup validators
+  const signupFormValidator = () => {
+    const newErrors = {
+      ...defaultErrorState,
+    };
+
+    // Name - empty validation
+    if (validator.isEmpty(userStateData?.name)) {
+      newErrors.nameError.push("Name is required");
+      newErrors.isError = true;
+    }
+    // Name - length validation
+    if (!validator.isLength(userStateData?.name, { min: 2 })) {
+      newErrors.nameError.push("Name must be at least 2 characters long");
+      newErrors.isError = true;
+    }
+    // email validation
+    if (!validator.isEmail(userStateData?.email)) {
+      newErrors.emailError.push("Invalid email address");
+      newErrors.isError = true;
+    }
+    // Password - length validation
+    if (!validator.isLength(userStateData?.password, { min: 6 })) {
+      newErrors.passwordError.push(
+        "Password must be at least 6 characters long"
+      );
+      newErrors.isError = true;
+    }
+
+    return errorStateData?.isError;
+  };
 
   // Set changed input field value in the user state data
   const handleInputChange = (event, key) => {
@@ -35,15 +82,21 @@ const Signup = () => {
 
   // Reset user signup form
   const resetSignUpForm = () => {
-    setUserStateData({ ...defaultState });
+    setUserStateData({ ...defaultUserState });
   };
 
   // Submit signup form
   const submitSignUpForm = (event) => {
     event.preventDefault();
 
-    console.log(userStateData);
+
     // data validation - client side
+    if (signupFormValidator()) {
+      return;
+    }
+    console.log(userStateData);
+
+    // add errors to check
 
     // invoke server api
 
@@ -80,8 +133,10 @@ const Signup = () => {
                     type="text"
                     required
                     onChange={(e) => handleInputChange(e, "name")}
-                    value={userStateData.name}
+                    value={userStateData?.name}
+                    invalid={errorStateData?.nameError ? true : false}
                   />
+                  <FormFeedback>{ errorStateData?.nameError[0] }</FormFeedback>
                 </FormGroup>
                 {/* Email field */}
                 <FormGroup>
@@ -95,6 +150,7 @@ const Signup = () => {
                     onChange={(e) => handleInputChange(e, "email")}
                     value={userStateData.email}
                   />
+                  <FormFeedback>Error in this field</FormFeedback>
                 </FormGroup>
                 {/* Password field */}
                 <FormGroup>
@@ -108,6 +164,7 @@ const Signup = () => {
                     onChange={(e) => handleInputChange(e, "password")}
                     value={userStateData.password}
                   />
+                  <FormFeedback>Error in this field</FormFeedback>
                 </FormGroup>
                 {/* About field */}
                 <FormGroup>
