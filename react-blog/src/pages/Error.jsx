@@ -1,5 +1,4 @@
 import { useRouteError } from "react-router-dom";
-import SiteNavbar from "../components/SiteNavbar";
 import Base from "../components/Base";
 
 export default function ErrorPage() {

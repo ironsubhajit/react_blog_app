@@ -1,3 +1,6 @@
+# Ignore backend for now
+backend-server/
+
 # Dependency directories
 */node_modules
 */npm-debug.log*

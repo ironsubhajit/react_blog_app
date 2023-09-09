@@ -6,7 +6,6 @@ import {
   CardTitle,
   CardText,
   CardSubtitle,
-  CardGroup,
   CardImg,
   Button,
   Row,

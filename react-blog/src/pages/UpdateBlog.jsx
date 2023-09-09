@@ -1,5 +1,4 @@
 import React from "react";
-import SiteNavbar from "../components/SiteNavbar";
 import Base from "../components/Base";
 
 const UpdateBlog = () => {

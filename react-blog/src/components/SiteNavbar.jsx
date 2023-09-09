@@ -9,10 +9,6 @@ import {
   Nav,
   NavItem,
   NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   NavbarText,
 } from "reactstrap";
 
@@ -40,11 +36,11 @@ const SiteNavbar = (args) => {
                 New Post
               </NavLink>
             </NavItem>
-            <NavItem>
+            {/* <NavItem>
               <NavLink tag={ReactNavLink} to={`/about`}>
                 About
               </NavLink>
-            </NavItem>
+            </NavItem> */}
             <NavItem>
               <NavLink tag={ReactNavLink} to={`/login`}>
                 Login
