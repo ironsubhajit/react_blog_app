@@ -8,13 +8,7 @@ function App() {
   return (
     <div className="App">
       <Base>
-        <Link to={`about`}>About page</Link>
-        <br />
-        <Link to={`blogs`}>Blog list page</Link>
-        <br />
-        <Link to={`add-blog`}>Blog create page</Link>
-        <br />
-        <Link to={`edit-blog`}>Blog update page</Link>
+        This is home page
       </Base>
     </div>
   );

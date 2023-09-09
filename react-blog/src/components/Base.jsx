@@ -6,7 +6,6 @@ const Base = ({ title = "Welcome to our website", children }) => {
     <div>
       <SiteNavbar />
       {children}
-      <h4>footer</h4>
     </div>
   );
 };
