@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Base from "../components/Base";
 import { Link } from "react-router-dom";
 import {
@@ -14,10 +14,42 @@ import {
   FormGroup,
   Label,
   Input,
-  FormText,
 } from "reactstrap";
 
 const Signup = () => {
+  const defaultState = {
+    name: "",
+    email: "",
+    password: "",
+    about: "",
+  };
+
+  const [userStateData, setUserStateData] = useState({
+    ...defaultState,
+  });
+
+  // Set changed input field value in the user state data
+  const handleInputChange = (event, key) => {
+    setUserStateData({ ...userStateData, [key]: event?.target?.value });
+  };
+
+  // Reset user signup form
+  const resetSignUpForm = () => {
+    setUserStateData({ ...defaultState });
+  };
+
+  // Submit signup form
+  const submitSignUpForm = (event) => {
+    event.preventDefault();
+
+    console.log(userStateData);
+    // data validation - client side
+
+    // invoke server api
+
+    // check and redirect to all blog list page
+  };
+
   return (
     <div>
       <Base>
@@ -37,27 +69,34 @@ const Signup = () => {
             </CardHeader>
             <CardBody>
               {/* Signup form */}
-              <Form>
+              <Form onSubmit={(e) => submitSignUpForm(e)}>
+                {/* Name field */}
                 <FormGroup>
-                  <Label for="userName">Name*</Label>
+                  <Label for="name">Name*</Label>
                   <Input
-                    id="userName"
-                    name="userName"
+                    id="name"
+                    name="name"
                     placeholder="Enter a name"
                     type="text"
                     required
+                    onChange={(e) => handleInputChange(e, "name")}
+                    value={userStateData.name}
                   />
                 </FormGroup>
+                {/* Email field */}
                 <FormGroup>
-                  <Label for="userEmail">Email*</Label>
+                  <Label for="email">Email*</Label>
                   <Input
-                    id="userEmail"
-                    name="userEmail"
+                    id="email"
+                    name="email"
                     placeholder="Enter an Email Id"
                     type="email"
                     required
+                    onChange={(e) => handleInputChange(e, "email")}
+                    value={userStateData.email}
                   />
                 </FormGroup>
+                {/* Password field */}
                 <FormGroup>
                   <Label for="password">Password*</Label>
                   <Input
@@ -66,21 +105,42 @@ const Signup = () => {
                     placeholder="Enter a password"
                     type="password"
                     required
+                    onChange={(e) => handleInputChange(e, "password")}
+                    value={userStateData.password}
                   />
                 </FormGroup>
-
+                {/* About field */}
                 <FormGroup>
-                  <Label for="aboutUser">About yourself</Label>
-                  <Input id="aboutUser" name="text" type="textarea" placeholder="Describe yourself..." />
+                  <Label for="about">About yourself</Label>
+                  <Input
+                    id="about"
+                    name="about"
+                    type="textarea"
+                    placeholder="Describe yourself..."
+                    onChange={(e) => handleInputChange(e, "about")}
+                    value={userStateData.about}
+                  />
                 </FormGroup>
 
                 <Container className="button-section d-flex flex-column align-items-center">
                   <Container className="text-center">
-                    <Button color="dark" type="submit" className="m-1">Sign up</Button>
-                    <Button color="secondary" type="reset" className="m-1">Reset</Button>
+                    {/* submit btn */}
+                    <Button color="dark" type="submit" className="m-1">
+                      Sign up
+                    </Button>
+                    {/* Reset btn */}
+                    <Button
+                      onClick={resetSignUpForm}
+                      color="secondary"
+                      type="reset"
+                      className="m-1"
+                    >
+                      Reset
+                    </Button>
                   </Container>
                   <CardText className="mt-2">
-                    Already have an account ? Please <Link to={`/login`}>Login</Link>
+                    Already have an account ? Please{" "}
+                    <Link to={`/login`}>Login</Link>
                   </CardText>
                 </Container>
               </Form>

@@ -14,7 +14,6 @@ import {
   FormGroup,
   Label,
   Input,
-  FormText,
 } from "reactstrap";
 
 const Login = () => {
