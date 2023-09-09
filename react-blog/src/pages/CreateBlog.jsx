@@ -1,9 +1,13 @@
 import React from "react";
+import SiteNavbar from "../components/SiteNavbar";
+import Base from "../components/Base";
 
 const CreateBlog = () => {
   return (
     <div>
-      <h3>This is create blog page</h3>
+      <Base>
+        <h3>This is create blog page</h3>
+      </Base>
     </div>
   );
 };

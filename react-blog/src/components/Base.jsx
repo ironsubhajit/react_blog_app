@@ -1,9 +1,10 @@
 import React from "react";
+import SiteNavbar from "./SiteNavbar";
 
 const Base = ({ title = "Welcome to our website", children }) => {
   return (
     <div>
-      <h1>Nav bar</h1>
+      <SiteNavbar />
       {children}
       <h4>footer</h4>
     </div>

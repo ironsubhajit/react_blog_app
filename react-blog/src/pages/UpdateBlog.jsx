@@ -1,9 +1,13 @@
 import React from "react";
+import SiteNavbar from "../components/SiteNavbar";
+import Base from "../components/Base";
 
 const UpdateBlog = () => {
   return (
     <div>
-      <h3>This is update a blog post page</h3>
+      <Base>
+        <h3>This is update a blog post page</h3>
+      </Base>
     </div>
   );
 };
