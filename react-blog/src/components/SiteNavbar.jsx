@@ -36,6 +36,11 @@ const SiteNavbar = (args) => {
               </NavLink>
             </NavItem>
             <NavItem>
+              <NavLink tag={ReactNavLink} to={`/add-blog`}>
+                New Post
+              </NavLink>
+            </NavItem>
+            <NavItem>
               <NavLink tag={ReactNavLink} to={`/about`}>
                 About
               </NavLink>
@@ -43,6 +48,11 @@ const SiteNavbar = (args) => {
             <NavItem>
               <NavLink tag={ReactNavLink} to={`/login`}>
                 Login
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={ReactNavLink} to={`/logout`}>
+                Logout
               </NavLink>
             </NavItem>
           </Nav>

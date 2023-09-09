@@ -1,10 +1,14 @@
 import React from "react";
 import Base from "../components/Base";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
     <div>
-      <Base>This is login page</Base>
+      <Base>
+        <h1>This is login page</h1>
+        <Link to={`/signup`}>Sign up page</Link>
+      </Base>
     </div>
   );
 };

@@ -10,6 +10,8 @@ import reportWebVitals from "./reportWebVitals";
 import BlogsList from "./pages/BlogsList";
 import CreateBlog from "./pages/CreateBlog";
 import UpdateBlog from "./pages/UpdateBlog";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +34,14 @@ const router = createBrowserRouter([
   {
     path: "edit-blog",
     element: <UpdateBlog />,
+  },
+  {
+    path: "login",
+    element: <Login />,
+  },
+  {
+    path: "signup",
+    element: <Signup />,
   },
 ]);
 

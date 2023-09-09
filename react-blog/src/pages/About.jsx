@@ -6,8 +6,10 @@ import SiteNavbar from "../components/SiteNavbar";
 const About = () => {
   return (
     <div>
-      <Base>This is about page</Base>
-      <Link to={`/`}>Home page</Link>
+      <Base>
+        <h1>This is about page</h1>
+        <Link to={`/`}>Home page</Link>
+      </Base>
     </div>
   );
 };

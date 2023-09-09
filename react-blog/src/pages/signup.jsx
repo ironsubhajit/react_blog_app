@@ -1,12 +1,16 @@
 import React from "react";
 import Base from "../components/Base";
+import { Link } from "react-router-dom";
 
-const signup = () => {
+const Signup = () => {
   return (
     <div>
-      <Base>This is sign up page</Base>
+      <Base>
+        <h1>This is sign up page</h1>
+        <Link to={`/login`}>Login page</Link>
+      </Base>
     </div>
   );
 };
 
-export default signup;
+export default Signup;
