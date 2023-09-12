@@ -23,12 +23,12 @@ const CreateBlog = () => {
     category: "",
     content: "",
     likes: 0,
-    userId: ""
+    userId: "",
   };
 
   const defaultErrorState = {
-    errors: [],
-    isError: false,
+    titleErrors: [],
+    contentErrors: []
   };
 
   // User state data
@@ -42,33 +42,34 @@ const CreateBlog = () => {
   });
 
   // signup validators
-  const newBlogFormValidator = () => {
-    const newErrors = {
-      ...defaultErrorState,
-    };
-
+  const newBlogFormValidator = (key) => {
     // Name - empty validation
-    if (validator.isEmpty(newBlogStateData?.title)) {
-      newErrors.errors.push("Blog title is required");
-      newErrors.isError = true;
-    }
-    // Name - length validation
-    if (!validator.isLength(newBlogStateData?.title, { min: 2 })) {
-      newErrors.errors.push("Name must be at least 2 characters long");
-      newErrors.isError = true;
+    if (key === "title") {
+      if (
+        validator?.isEmpty(newBlogStateData?.[key]) ||
+        (newBlogStateData?.[key]?.length < 3 )
+      ) {
+        setErrorStateData({ ...errorStateData, titleErrors: ["Name must be at least 4 characters long"]})
+      } else {
+        setErrorStateData({ ...errorStateData, titleErrors: []})
+      }
     }
     // Blog content - length validation
-    if (!validator.isLength(newBlogStateData?.content, { min: 50 })) {
-      newErrors.errors.push("Blog content must be at least 50 characters long");
-      newErrors.isError = true;
+    if (key === "content") {
+      if (!validator?.isLength(newBlogStateData?.[key], { min: 49 })) {
+        setErrorStateData({ ...errorStateData, contentErrors: ["Blog content must be at least 50 characters long"]})
+      } else {
+        setErrorStateData({ ...errorStateData, contentErrors: []})
+      }
     }
-    
-    return errorStateData?.isError;
+    return ;
   };
 
   // Set changed input field value in the user state data
   const handleInputChange = (event, key) => {
     setNewBlogStateData({ ...newBlogStateData, [key]: event?.target?.value });
+    newBlogFormValidator(key);
+    console.log(JSON.stringify(errorStateData));
   };
 
   // Reset user signup form
@@ -81,9 +82,9 @@ const CreateBlog = () => {
     event.preventDefault();
 
     // data validation - client side
-    if (newBlogFormValidator()) {
-      return;
-    }
+    // if (newBlogFormValidator()) {
+    //   return;
+    // }
     console.log(newBlogStateData);
 
     // add errors to check
@@ -123,8 +124,9 @@ const CreateBlog = () => {
                     required
                     onChange={(e) => handleInputChange(e, "title")}
                     value={newBlogStateData?.title}
+                    invalid={ errorStateData?.titleErrors?.length > 0 ? true : false }
                   />
-                  <FormFeedback>{errorStateData?.errors[0]}</FormFeedback>
+                  <FormFeedback>{ errorStateData?.titleErrors[0] }</FormFeedback>
                 </FormGroup>
                 {/* Category field */}
                 <FormGroup>
@@ -138,7 +140,7 @@ const CreateBlog = () => {
                     onChange={(e) => handleInputChange(e, "category")}
                     value={newBlogStateData?.category}
                   />
-                  <FormFeedback>{errorStateData?.errors[0]}</FormFeedback>
+                  
                 </FormGroup>
                 {/* image url field */}
                 <FormGroup>
@@ -163,18 +165,24 @@ const CreateBlog = () => {
                     type="textarea"
                     placeholder="Write blog content here..."
                     onChange={(e) => handleInputChange(e, "content")}
-                    value={newBlogStateData.content}
+                    value={newBlogStateData?.content}
+                    invalid={ errorStateData?.contentErrors?.length > 0 ? true : false }
                     style={{
                       height: "10rem",
-                      overflowY: "visible"
+                      overflowY: "visible",
                     }}
                   />
+                  <FormFeedback>{  errorStateData?.contentErrors[0] }</FormFeedback>
                 </FormGroup>
 
                 <Container className="button-section d-flex flex-column align-items-center">
                   <Container className="text-center">
                     {/* publish btn */}
-                    <Button disabled={errorStateData?.isError} color="dark" type="submit" className="m-1">
+                    <Button
+                      color="dark"
+                      type="submit"
+                      className="m-1"
+                    >
                       Publish
                     </Button>
                     {/* Reset btn */}

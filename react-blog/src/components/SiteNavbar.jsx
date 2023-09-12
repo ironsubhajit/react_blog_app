@@ -19,7 +19,7 @@ const SiteNavbar = (args) => {
 
   return (
     <div>
-      <Navbar color="dark" dark="true" full="true" expand="md">
+      <Navbar color="dark" dark full="true" expand="md">
         <NavbarBrand tag={ReactNavLink} to={`/`}>
           React Blog
         </NavbarBrand>
