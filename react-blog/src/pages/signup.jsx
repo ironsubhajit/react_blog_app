@@ -156,8 +156,6 @@ const Signup = () => {
         const data = error?.response?.data;
         handleServerErrors(data);
       });
-
-    // check and redirect to all blog list page
   };
 
   return (

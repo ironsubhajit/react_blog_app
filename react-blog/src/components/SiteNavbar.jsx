@@ -36,6 +36,11 @@ const SiteNavbar = (args) => {
                 New Post
               </NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink tag={ReactNavLink} to={`/edit`}>
+                edit blog
+              </NavLink>
+            </NavItem>
             {/* <NavItem>
               <NavLink tag={ReactNavLink} to={`/about`}>
                 About

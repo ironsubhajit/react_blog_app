@@ -15,6 +15,8 @@ import {
   Label,
   Input,
 } from "reactstrap";
+import { addBlog } from "../services/blogs-service";
+
 
 const CreateBlog = () => {
   const defaultNewBlogDataState = {
@@ -41,7 +43,7 @@ const CreateBlog = () => {
     ...defaultErrorState,
   });
 
-  // signup validators
+  // blog form validators
   const newBlogFormValidator = (key) => {
     // Name - empty validation
     if (key === "title") {
@@ -80,16 +82,24 @@ const CreateBlog = () => {
   // Submit signup form
   const submitNewBlogForm = (event) => {
     event.preventDefault();
-
-    // data validation - client side
-    // if (newBlogFormValidator()) {
-    //   return;
-    // }
     console.log(newBlogStateData);
-
-    // add errors to check
-
+    // Todo: update userid
+    setNewBlogStateData({...newBlogStateData, userId: ["64fc7085028944400b3449e3"]})
+    console.log(newBlogStateData);
     // invoke server api
+    addBlog(newBlogStateData)
+      .then((res) => {
+        console.log(res);
+        console.log("Blog added successfully");
+        // set form to default
+        setNewBlogStateData({ ...defaultNewBlogDataState });
+        // Navigate("/blogs");
+      })
+      .catch((error) => {
+        console.log("error: ", error);
+        // const data = error?.response?.data;
+        // handleServerErrors(data);
+      });
 
     // check and redirect to all blog list page
   };
@@ -102,12 +112,13 @@ const CreateBlog = () => {
             style={{
               width: "85%",
             }}
-            className="m-2"
+            className="m-2 shadow"
           >
             <CardHeader>
               <CardTitle tag="h3">Create New Blog</CardTitle>
               <CardSubtitle className="mb-2" tag="h6">
-                Please fill the details to create new blog !
+                Please fill the details to create new blog ! <br />
+                {JSON.stringify(newBlogStateData)}
               </CardSubtitle>
             </CardHeader>
             <CardBody>
