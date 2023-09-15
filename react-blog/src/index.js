@@ -14,6 +14,7 @@ import CreateBlog from "./pages/CreateBlog";
 import UpdateBlog from "./pages/UpdateBlog";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import BlogDetail from "./pages/BlogDetail";
 
 
 const router = createBrowserRouter([
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
   {
     path: "edit",
     element: <UpdateBlog />,
+  },
+  {
+    path: "detail",
+    element: <BlogDetail />,
   },
   {
     path: "login",

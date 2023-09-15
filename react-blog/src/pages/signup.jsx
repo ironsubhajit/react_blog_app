@@ -167,7 +167,7 @@ const Signup = () => {
             style={{
               width: "45rem",
             }}
-            className="m-2"
+            className="m-2 shadow"
           >
             <CardHeader>
               <CardTitle tag="h3">Sign Up</CardTitle>
