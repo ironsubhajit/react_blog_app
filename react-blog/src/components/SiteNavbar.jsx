@@ -61,25 +61,20 @@ const SiteNavbar = (args) => {
         <Collapse isOpen={isOpen} navbar>
           <Nav className="me-auto" navbar>
             <NavItem>
-              <NavLink tag={ReactNavLink} to={`/blogs`}>
+              <NavLink tag={ReactNavLink} to={`/blog/list`}>
                 All Blogs
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink tag={ReactNavLink} to={`/add-blog`}>
+              <NavLink tag={ReactNavLink} to={`/blog/create`}>
                 New Post
               </NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink tag={ReactNavLink} to={`/edit`}>
-                Edit blog
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={ReactNavLink} to={`/detail`}>
+            {/* <NavItem>
+              <NavLink tag={ReactNavLink} to={`/blog/view`}>
                 Detail blog
               </NavLink>
-            </NavItem>
+            </NavItem> */}
             {/* <NavItem>
               <NavLink tag={ReactNavLink} to={`/about`}>
                 About

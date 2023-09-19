@@ -16,21 +16,25 @@ import {
   Input,
 } from "reactstrap";
 import { addBlog } from "../services/blogs-service";
-
+import { getUserDetails } from "../services/user-service";
+import { toast } from "react-toastify";
 
 const CreateBlog = () => {
+  const { _id } = getUserDetails();
+
   const defaultNewBlogDataState = {
     title: "",
     imageUrl: "",
     category: "",
     content: "",
     likes: 0,
-    userId: "",
+    userId: _id,
   };
 
   const defaultErrorState = {
     titleErrors: [],
-    contentErrors: []
+    categoryErrors: [],
+    contentErrors: [],
   };
 
   // User state data
@@ -49,26 +53,47 @@ const CreateBlog = () => {
     if (key === "title") {
       if (
         validator?.isEmpty(newBlogStateData?.[key]) ||
-        (newBlogStateData?.[key]?.length < 3 )
+        !validator?.isLength(newBlogStateData?.[key], { min: 3 })
       ) {
-        setErrorStateData({ ...errorStateData, titleErrors: ["Name must be at least 4 characters long"]})
+        setErrorStateData({
+          ...errorStateData,
+          titleErrors: ["Name must be at least 4 characters long"],
+        });
       } else {
-        setErrorStateData({ ...errorStateData, titleErrors: []})
+        setErrorStateData({ ...errorStateData, titleErrors: [] });
       }
     }
+    // Blog category - length validation
+    if (key === "category") {
+      if (
+        validator?.isEmpty(newBlogStateData?.[key]) ||
+        !validator?.isLength(newBlogStateData?.[key], { min: 2 })
+      ) {
+        setErrorStateData({
+          ...errorStateData,
+          categoryErrors: ["Please enter a valid category"],
+        });
+      } else {
+        setErrorStateData({ ...errorStateData, categoryErrors: [] });
+      }
+    }
+
     // Blog content - length validation
     if (key === "content") {
       if (!validator?.isLength(newBlogStateData?.[key], { min: 49 })) {
-        setErrorStateData({ ...errorStateData, contentErrors: ["Blog content must be at least 50 characters long"]})
+        setErrorStateData({
+          ...errorStateData,
+          contentErrors: ["Blog content must be at least 50 characters long"],
+        });
       } else {
-        setErrorStateData({ ...errorStateData, contentErrors: []})
+        setErrorStateData({ ...errorStateData, contentErrors: [] });
       }
     }
-    return ;
+    return;
   };
 
   // Set changed input field value in the user state data
-  const handleInputChange = (event, key) => {
+  const handleInputChange = async (event, key) => {
     setNewBlogStateData({ ...newBlogStateData, [key]: event?.target?.value });
     newBlogFormValidator(key);
     console.log(JSON.stringify(errorStateData));
@@ -77,32 +102,36 @@ const CreateBlog = () => {
   // Reset user signup form
   const resetSignUpForm = () => {
     setNewBlogStateData({ ...defaultNewBlogDataState });
+    setErrorStateData({ ...defaultErrorState });
   };
 
-  // Submit signup form
+  // Submit form
   const submitNewBlogForm = (event) => {
     event.preventDefault();
     console.log(newBlogStateData);
     // Todo: update userid
-    setNewBlogStateData({...newBlogStateData, userId: ["64fc7085028944400b3449e3"]})
+    setNewBlogStateData({ ...newBlogStateData });
     console.log(newBlogStateData);
     // invoke server api
     addBlog(newBlogStateData)
       .then((res) => {
         console.log(res);
         console.log("Blog added successfully");
+        toast.success(`${newBlogStateData?.title} - New blog created !`);
         // set form to default
         setNewBlogStateData({ ...defaultNewBlogDataState });
         // Navigate("/blogs");
       })
       .catch((error) => {
         console.log("error: ", error);
+        toast.error(`Something went wrong ! Unable to create blog !`);
         // const data = error?.response?.data;
         // handleServerErrors(data);
       });
 
     // check and redirect to all blog list page
   };
+
   return (
     <div>
       <Base>
@@ -118,7 +147,6 @@ const CreateBlog = () => {
               <CardTitle tag="h3">Create New Blog</CardTitle>
               <CardSubtitle className="mb-2" tag="h6">
                 Please fill the details to create new blog ! <br />
-                {JSON.stringify(newBlogStateData)}
               </CardSubtitle>
             </CardHeader>
             <CardBody>
@@ -135,9 +163,11 @@ const CreateBlog = () => {
                     required
                     onChange={(e) => handleInputChange(e, "title")}
                     value={newBlogStateData?.title}
-                    invalid={ errorStateData?.titleErrors?.length > 0 ? true : false }
+                    invalid={
+                      errorStateData?.titleErrors?.length > 0 ? true : false
+                    }
                   />
-                  <FormFeedback>{ errorStateData?.titleErrors[0] }</FormFeedback>
+                  <FormFeedback>{errorStateData?.titleErrors[0]}</FormFeedback>
                 </FormGroup>
                 {/* Category field */}
                 <FormGroup>
@@ -150,8 +180,13 @@ const CreateBlog = () => {
                     required
                     onChange={(e) => handleInputChange(e, "category")}
                     value={newBlogStateData?.category}
+                    invalid={
+                      errorStateData?.categoryErrors?.length > 0 ? true : false
+                    }
                   />
-                  
+                  <FormFeedback>
+                    {errorStateData?.categoryErrors[0]}
+                  </FormFeedback>
                 </FormGroup>
                 {/* image url field */}
                 <FormGroup>
@@ -177,23 +212,23 @@ const CreateBlog = () => {
                     placeholder="Write blog content here..."
                     onChange={(e) => handleInputChange(e, "content")}
                     value={newBlogStateData?.content}
-                    invalid={ errorStateData?.contentErrors?.length > 0 ? true : false }
+                    invalid={
+                      errorStateData?.contentErrors?.length > 0 ? true : false
+                    }
                     style={{
                       height: "10rem",
                       overflowY: "visible",
                     }}
                   />
-                  <FormFeedback>{  errorStateData?.contentErrors[0] }</FormFeedback>
+                  <FormFeedback>
+                    {errorStateData?.contentErrors[0]}
+                  </FormFeedback>
                 </FormGroup>
 
                 <Container className="button-section d-flex flex-column align-items-center">
                   <Container className="text-center">
                     {/* publish btn */}
-                    <Button
-                      color="dark"
-                      type="submit"
-                      className="m-1"
-                    >
+                    <Button color="dark" type="submit" className="m-1">
                       Publish
                     </Button>
                     {/* Reset btn */}

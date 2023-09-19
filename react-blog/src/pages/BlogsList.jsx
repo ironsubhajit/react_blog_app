@@ -10,8 +10,10 @@ import {
   Button,
   Row,
   Col,
+  NavLink
 } from "reactstrap";
 import { blogsList } from "../services/blogs-service";
+import { NavLink as ReactNavLink } from "react-router-dom";
 
 const BlogsList = () => {
   const defaultBlogsState = {
@@ -25,16 +27,18 @@ const BlogsList = () => {
 
   const getBlogs = () => {
     // invoke server api
-    blogsList()
-      .then((res) => {
-        console.log(res);
-        console.log("Sucess log");
-        // set blog state
-        setBlogsStateData({ ...blogsStateData, blogs: res });
-      })
-      .catch((error) => {
-        console.log("error: ", error);
-      });
+    // blogsList()
+    //   .then((res) => {
+    //     console.log(res);
+    //     console.log("Sucess log");
+    //     // set blog state
+    //     setBlogsStateData({ ...blogsStateData, blogs: res });
+    //   })
+    //   .catch((error) => {
+    //     console.log("error: ", error);
+    //   });
+
+    // todo: invoke state action
   };
 
   useEffect(() => {
@@ -78,7 +82,7 @@ const BlogsList = () => {
                     }}
                     color="dark"
                   >
-                    Read More
+                    <NavLink tag={ReactNavLink} to={`/blog/${card?._id}/view`}>Read More</NavLink>
                   </Button>
                 </CardBody>
               </Card>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Base from "../components/Base";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -15,6 +15,7 @@ import {
   FormFeedback,
   Label,
   Input,
+  Spinner
 } from "reactstrap";
 import validator from "validator";
 import { toast } from "react-toastify";
@@ -25,6 +26,7 @@ const Login = () => {
   const defaultFormState = {
     email: "",
     password: "",
+    isLoading: false,
   };
 
   const defaultErrorState = {
@@ -111,10 +113,6 @@ const Login = () => {
         });
       }
     });
-
-    // Success notification
-    toast.error("User not registered !! try again !!");
-    // setErrorStateData({...errorStateData, errors: error, isError: true})
   }
 
   // Set changed input field value in the user state data
@@ -123,24 +121,26 @@ const Login = () => {
     formValidator(key);
   };
 
+  useEffect(() => {
+    toast.info("Please login to create content !");
+  }, []);
+
   // Submit login form
   const submitForm = (event) => {
     event.preventDefault();
     console.log("comp sign up form data: ", formStateData);
 
     // invoke service
-    userLogin(formStateData)
+    setFormStateData({ ...formStateData, isLoading: true });
+    const { isLoading, ...loginCreadentials } = formStateData;
+    console.log("log data", loginCreadentials)
+    userLogin(loginCreadentials)
       .then((res) => {
         console.log(res);
         console.log("sucess log");
-        localStorage.setItem(
-          "AUTH_TOKEN",
-          JSON.stringify(res?.token)
-        );
-        localStorage.setItem(
-          "user",
-          JSON.stringify(res?.user)
-        );
+        localStorage.setItem("AUTH_TOKEN", JSON.stringify(res?.token));
+        localStorage.setItem("user", JSON.stringify(res?.user));
+        setFormStateData({ ...defaultFormState });
         // redirect to home page
         navigate("/");
         toast.success("User Logged in successfully !!");
@@ -148,10 +148,11 @@ const Login = () => {
         setFormStateData({ ...defaultErrorState });
       })
       .catch((error) => {
+        setFormStateData({ ...formStateData, isLoading: false });
         console.log("error: ", error);
         const data = error?.response?.data;
         handleServerErrors(data);
-        toast.success("Login unsuccessfull !! try again !!");
+        toast.error("Login unsuccessfull !! try again !!");
       });
   };
 
@@ -216,9 +217,20 @@ const Login = () => {
 
                 <Container className="button-section d-flex flex-column align-items-center">
                   <Container className="text-center">
-                    <Button color="dark" type="submit" className="m-1">
-                      Login
+                    <Button
+                      color="dark"
+                      disabled={formStateData?.isLoading ? true : false}
+                      type="submit"
+                      className="m-1"
+                    >
+                      {formStateData?.isLoading && (
+                        <Spinner size="sm">Loading...</Spinner>
+                      )}
+                      <span> Login </span>
                     </Button>
+                    {/* <Button color="dark" type="submit" className="m-1">
+                      Login
+                    </Button> */}
                     <Button
                       onClick={resetForm}
                       color="secondary"

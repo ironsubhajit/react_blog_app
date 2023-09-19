@@ -20,7 +20,7 @@ function App() {
                   <p className="lead">
                     Explore the latest articles, news, and more.
                   </p>
-                  <Link to="/blogs" className="btn btn-dark">
+                  <Link to="/blog/list" className="btn btn-dark">
                     View blogs
                   </Link>
                 </div>

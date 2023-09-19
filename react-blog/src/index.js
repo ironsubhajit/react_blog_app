@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "./index.css";
 import App from "./App";
@@ -15,6 +15,7 @@ import UpdateBlog from "./pages/UpdateBlog";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import BlogDetail from "./pages/BlogDetail";
+import Blog from "./pages/Blog";
 
 
 const router = createBrowserRouter([
@@ -24,42 +25,57 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "about",
+    path: "/about",
     element: <About />,
   },
   {
-    path: "blogs",
+    path: "/blog/list",
     element: <BlogsList />,
   },
   {
-    path: "add-blog",
-    element: <CreateBlog />,
-  },
-  {
-    path: "edit",
-    element: <UpdateBlog />,
-  },
-  {
-    path: "detail",
+    path: "/blog/:blogId/view",
     element: <BlogDetail />,
   },
   {
-    path: "login",
+    path: "/blog",
+    element: <Blog />,
+    children: [
+      {
+        path: "create",
+        element: <CreateBlog />,
+      },
+      {
+        path: ":blogId/edit",
+        element: <UpdateBlog />,
+      },
+    ],
+  },
+  {
+    path: "/login",
     element: <Login />,
   },
   {
-    path: "signup",
+    path: "/signup",
     element: <Signup />,
   },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+// Dev server o strict mode
+// root.render(
+//   <React.StrictMode>
+//     <ToastContainer position="top-center" />
+//     <RouterProvider router={router} />
+//   </React.StrictMode>
+// );
+// Prod server
 root.render(
-  <React.StrictMode>
-    <ToastContainer position="top-center"/>
+  <>
+    <ToastContainer position="top-center" />
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </>
 );
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
