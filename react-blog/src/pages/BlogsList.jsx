@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Base from "../components/Base";
 import {
   Card,
@@ -12,50 +12,33 @@ import {
   Col,
   NavLink
 } from "reactstrap";
-import { blogsList } from "../services/blogs-service";
 import { NavLink as ReactNavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getBlogs } from "../redux-state/actions/actions";
 
 const BlogsList = () => {
-  const defaultBlogsState = {
-    blogs: [],
-  };
 
-  // User state data
-  const [blogsStateData, setBlogsStateData] = useState({
-    ...defaultBlogsState,
-  });
-
-  const getBlogs = () => {
-    // invoke server api
-    // blogsList()
-    //   .then((res) => {
-    //     console.log(res);
-    //     console.log("Sucess log");
-    //     // set blog state
-    //     setBlogsStateData({ ...blogsStateData, blogs: res });
-    //   })
-    //   .catch((error) => {
-    //     console.log("error: ", error);
-    //   });
-
-    // todo: invoke state action
-  };
+  const dispatch = useDispatch();
+  const blogList = useSelector((state) => state?.blogs?.blogs);
+  const error = useSelector((state) => state?.blogs?.error);
 
   useEffect(() => {
-    getBlogs();
-  }, []);
+    // Fetch blogs when the component mounts
+    dispatch(getBlogs());
+  }, [dispatch]);
+
 
   return (
     <div>
       <Base>
         <Row className="d-flex flex-wrap">
-          {blogsStateData?.blogs?.map((card, index) => (
+          {blogList?.map((card, index) => (
             <Col xs="12" sm="6" md="4" key={index}>
               <Card outline key={index} className="m-2">
                 {/* todo: change image url with db res */}
                 <CardImg
-                  alt="Card image cap"
-                  src="https://c0.wallpaperflare.com/preview/728/375/731/aerial-analog-background-blog.jpg"
+                  alt="Blog image"
+                  src={card?.imageUrl}
                   top
                   width="100%"
                 />
@@ -82,7 +65,9 @@ const BlogsList = () => {
                     }}
                     color="dark"
                   >
-                    <NavLink tag={ReactNavLink} to={`/blog/${card?._id}/view`}>Read More</NavLink>
+                    <NavLink tag={ReactNavLink} to={`/blog/${card?._id}/view`}>
+                      Read More
+                    </NavLink>
                   </Button>
                 </CardBody>
               </Card>

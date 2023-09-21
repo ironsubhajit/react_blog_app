@@ -149,7 +149,7 @@ const Signup = () => {
         navigate("/login");
         toast.success("User registered successfully !!");
         // reset state data
-        userStateData = { ...defaultErrorState };
+        setUserStateData({...defaultUserState});
       })
       .catch((error) => {
         console.log("error: ");

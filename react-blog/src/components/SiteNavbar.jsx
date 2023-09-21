@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink as ReactNavLink, useNavigate } from "react-router-dom";
-
+import { useSelector } from "react-redux";
 import {
   Collapse,
   Navbar,
@@ -10,17 +10,21 @@ import {
   NavItem,
   NavLink,
   NavbarText,
+  Progress,
 } from "reactstrap";
-import { getUserDetails, isUserLoggedIn, userLogout } from "../services/user-service";
-
+import {
+  getUserDetails,
+  isUserLoggedIn,
+  userLogout,
+} from "../services/user-service";
 
 const defaultUserDetailsState = {
-  "_id": undefined,
-  "name": undefined,
-  "email": undefined,
-  "about": undefined,
-  "role":undefined,
-}
+  _id: undefined,
+  name: undefined,
+  email: undefined,
+  about: undefined,
+  role: undefined,
+};
 
 const SiteNavbar = (args) => {
   const navigate = useNavigate();
@@ -28,19 +32,20 @@ const SiteNavbar = (args) => {
 
   const toggle = () => setIsOpen(!isOpen);
 
-
   // user login status
   const [loginStatusState, setLoginStatusState] = useState(false);
-  const [userDetailsState, setUserDetailsState] = useState({...defaultUserDetailsState});
+  const [userDetailsState, setUserDetailsState] = useState({
+    ...defaultUserDetailsState,
+  });
 
   useEffect(() => {
     setLoginStatusState(isUserLoggedIn());
-    if(isUserLoggedIn()) {
+    if (isUserLoggedIn()) {
       setUserDetailsState(getUserDetails());
-    }else {
-      setUserDetailsState({...defaultUserDetailsState});
+    } else {
+      setUserDetailsState({ ...defaultUserDetailsState });
     }
-  },[loginStatusState])
+  }, [loginStatusState]);
 
   // todo: need to refresh nav after logout
   const logout = () => {
@@ -49,7 +54,9 @@ const SiteNavbar = (args) => {
       setLoginStatusState(false);
     });
     navigate("/login");
-  }
+  };
+
+  const isLoading = useSelector((state) => state?.blogs?.loading);
 
   return (
     <div>
@@ -70,21 +77,9 @@ const SiteNavbar = (args) => {
                 New Post
               </NavLink>
             </NavItem>
-            {/* <NavItem>
-              <NavLink tag={ReactNavLink} to={`/blog/view`}>
-                Detail blog
-              </NavLink>
-            </NavItem> */}
-            {/* <NavItem>
-              <NavLink tag={ReactNavLink} to={`/about`}>
-                About
-              </NavLink>
-            </NavItem> */}
             {loginStatusState ? (
               <NavItem>
-                <NavLink onClick={logout}>
-                  Logout
-                </NavLink>
+                <NavLink onClick={logout}>Logout</NavLink>
               </NavItem>
             ) : (
               <NavItem>
@@ -94,9 +89,21 @@ const SiteNavbar = (args) => {
               </NavItem>
             )}
           </Nav>
-          <NavbarText> { userDetailsState?.name }</NavbarText>
+          <NavbarText> {userDetailsState?.name}</NavbarText>
         </Collapse>
       </Navbar>
+
+      {isLoading && (
+        <Progress
+          style={{
+            height: "0.275rem",
+          }}
+          animated
+          className="mb-1"
+          color="success"
+          value={100}
+        />
+      )}
     </div>
   );
 };

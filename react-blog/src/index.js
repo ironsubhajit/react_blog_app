@@ -16,7 +16,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import BlogDetail from "./pages/BlogDetail";
 import Blog from "./pages/Blog";
-
+import { Provider } from "react-redux";
+import store from "./redux-state/store/store";
 
 const router = createBrowserRouter([
   {
@@ -63,19 +64,20 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 // Dev server o strict mode
 // root.render(
+// <Provider store={store}>
 //   <React.StrictMode>
 //     <ToastContainer position="top-center" />
 //     <RouterProvider router={router} />
 //   </React.StrictMode>
+// </Provider>
 // );
 // Prod server
 root.render(
-  <>
+  <Provider store={store}>
     <ToastContainer position="top-center" />
     <RouterProvider router={router} />
-  </>
+  </Provider>
 );
-
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
