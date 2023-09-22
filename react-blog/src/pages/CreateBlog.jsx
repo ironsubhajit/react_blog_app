@@ -15,12 +15,20 @@ import {
   Label,
   Input,
 } from "reactstrap";
-import { addBlog } from "../services/blogs-service";
 import { getUserDetails } from "../services/user-service";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { addBlog } from "../redux-state/actions/actions";
+import { useNavigate } from "react-router-dom";
 
 const CreateBlog = () => {
   const { _id } = getUserDetails();
+
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state?.blogs?.isLoading);
+  const error = useSelector((state) => state?.blogs?.error);
 
   const defaultNewBlogDataState = {
     title: "",
@@ -106,30 +114,23 @@ const CreateBlog = () => {
   };
 
   // Submit form
-  const submitNewBlogForm = (event) => {
+  const submitNewBlogForm = async (event) => {
     event.preventDefault();
     console.log(newBlogStateData);
     // Todo: update userid
     setNewBlogStateData({ ...newBlogStateData });
     console.log(newBlogStateData);
-    // invoke server api
-    addBlog(newBlogStateData)
-      .then((res) => {
-        console.log(res);
-        console.log("Blog added successfully");
-        toast.success(`${newBlogStateData?.title} - New blog created !`);
-        // set form to default
-        setNewBlogStateData({ ...defaultNewBlogDataState });
-        // Navigate("/blogs");
-      })
-      .catch((error) => {
-        console.log("error: ", error);
-        toast.error(`Something went wrong ! Unable to create blog !`);
-        // const data = error?.response?.data;
-        // handleServerErrors(data);
-      });
 
-    // check and redirect to all blog list page
+    await dispatch(addBlog(newBlogStateData));
+
+    // Check if there's an error, and display an alert if needed
+    if (error) {
+      toast.error("Error adding blog post: " + error);
+    } else {
+      setNewBlogStateData({ ...defaultNewBlogDataState });
+      toast.success(`${newBlogStateData?.title} - New blog created !`);
+      navigate("/blogs/list");
+    }
   };
 
   return (
@@ -228,8 +229,13 @@ const CreateBlog = () => {
                 <Container className="button-section d-flex flex-column align-items-center">
                   <Container className="text-center">
                     {/* publish btn */}
-                    <Button color="dark" type="submit" className="m-1">
-                      Publish
+                    <Button
+                      color="dark"
+                      disabled={isLoading}
+                      type="submit"
+                      className="m-1"
+                    >
+                      <span> Publish </span>
                     </Button>
                     {/* Reset btn */}
                     <Button

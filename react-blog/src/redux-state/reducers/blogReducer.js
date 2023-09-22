@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-import { addBlog, blogsList } from "../../services/blogs-service";
 import * as actionTypes from "../actions/action-types";
 
 // reducers.js
@@ -18,28 +16,12 @@ function blogsReducer(state = initialBlogListState, action) {
       return {...state, blogs: action?.payload, loading: false, error: null};
     case actionTypes?.GET_BLOGS_ERROR:
       return {...state, loading: false, error: action?.error};
-    // case actionTypes?.ADD_BLOG:
-    //   console.log("Add new blog...");
-    //   // Add a new post to the state
-    //   const newBlog = { ...action?.payload };
-    //   // invoke server api
-    //   // todo: 1. return error or success to the component
-    //   // addBlog(newBlog)
-    //   //   .then((res) => {
-    //   //     console.log(res);
-    //   //     console.log("Blog added successfully");
-    //   //     // Update blogsList state
-    //   //     return { ...state, blogs: [...state.blogs, newBlog] };
-    //   //     // Navigate("/blogs");
-    //   //   })
-    //   //   .catch((error) => {
-    //   //     console.log("error: ", error);
-    //   //     toast.error(`Something went wrong ! Unable to create blog !`);
-    //   //     // const data = error?.response?.data;
-    //   //     // handleServerErrors(data);
-    //   //   });
-    //   return {...state, blogs: [...state.blogs, newBlog]};
-
+    case actionTypes?.ADD_BLOG_REQUEST:
+      return {...state, loading: true, error: null};
+    case actionTypes?.ADD_BLOG_SUCCESS:
+      return {...state, blogs: [...state?.blogs, action?.payload], loading: false, error: null};
+    case actionTypes?.ADD_BLOG_ERROR:
+      return {...state, loading: false, error: action?.error};
     default:
       // console.log("Redux State called...");
       return state;
