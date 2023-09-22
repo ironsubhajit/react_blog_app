@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import Base from "../components/Base";
-import { NavLink as ReactNavLink, useNavigate, useParams } from "react-router-dom";
+import {
+  NavLink as ReactNavLink,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import {
   Container,
   Card,
@@ -9,25 +13,32 @@ import {
   Button,
   Row,
   Col,
-  CardTitle
+  CardTitle,
 } from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { getBlogs } from "../redux-state/actions/actions";
 
 const BlogDetail = () => {
+  const { blogId } = useParams();
 
-  const {blogId} = useParams();
+  const blogs = useSelector((state) => state?.blogs?.blogs);
+  const dispatch = useDispatch();
 
-  const blog = {
-    title: "Blog title",
-    id: blogId,
-    user: {
-      name: "test01",
-    },
-    category: {
-      categoryTitle: "tech",
-    },
-    content: "demo content",
-  };
+  if (blogs?.length == 0) {
+    // state's list is empty
+    dispatch(getBlogs());
+  }
+
+  const blog = blogs?.find((blog) => blog?._id === blogId);
+
+  if (!blog) {
+    toast.error("No blog found!");
+    navigate("/");
+  }
+
+  console.log("Blog: ", blog);
 
   const [deleteModalIsOpen, setdeleteModalIsOpen] = useState(false);
   const modalProps = {
@@ -63,7 +74,7 @@ const BlogDetail = () => {
                           }}
                         >
                           <small className="text-muted">
-                            Posted by @{blog?.user?.name}
+                            Posted by @{blog?._id}
                           </small>
                         </Col>
                         <Col
@@ -77,7 +88,7 @@ const BlogDetail = () => {
                             className="mx-1"
                             color="dark"
                             tag={ReactNavLink}
-                            to={`/blog/${blog?.id}/edit`}
+                            to={`/blog/${blog?._id}/edit`}
                           >
                             <span
                               style={{ fontSize: "1rem" }}
@@ -135,7 +146,7 @@ const BlogDetail = () => {
 
                     <CardText>
                       <span className="text-muted">
-                        Category: {blog?.category?.categoryTitle}
+                        Category: {blog?.category}
                       </span>
                     </CardText>
 
@@ -149,7 +160,7 @@ const BlogDetail = () => {
                     ></div>
 
                     <CardTitle className="mt-3">
-                      <h1>{blog.title} </h1>
+                      <h1>{blog?.title} </h1>
                     </CardTitle>
                     <div
                       className="image-container  mt-4 shadow  "
@@ -157,13 +168,13 @@ const BlogDetail = () => {
                     >
                       <img
                         className="img-fluid"
-                        src="https://c0.wallpaperflare.com/preview/728/375/731/aerial-analog-background-blog.jpg"
-                        alt=""
+                        src={blog?.imageUrl}
+                        alt="Blog thumbnail"
                       />
                     </div>
                     <CardText
                       className="mt-5"
-                      dangerouslySetInnerHTML={{ __html: blog.content }}
+                      dangerouslySetInnerHTML={{ __html: blog?.content }}
                     ></CardText>
                   </CardBody>
                 )}
