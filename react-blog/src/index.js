@@ -18,6 +18,7 @@ import BlogDetail from "./pages/BlogDetail";
 import Blog from "./pages/Blog";
 import { Provider } from "react-redux";
 import store from "./redux-state/store/store";
+import { BlogContextProvider } from "./context-api/BlogContext";
 
 const router = createBrowserRouter([
   {
@@ -73,10 +74,12 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 // );
 // Prod server
 root.render(
-  <Provider store={store}>
-    <ToastContainer position="top-center" />
-    <RouterProvider router={router} />
-  </Provider>
+  <BlogContextProvider>
+    <Provider store={store}>
+      <ToastContainer position="top-center" />
+      <RouterProvider router={router} />
+    </Provider>
+  </BlogContextProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

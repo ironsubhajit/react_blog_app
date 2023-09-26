@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Base from "../components/Base";
 import {
   NavLink as ReactNavLink,
@@ -14,24 +14,34 @@ import {
   Row,
   Col,
   CardTitle,
+  Badge,
 } from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getBlogs } from "../redux-state/actions/actions";
+import { deleteBlog, updateBlogLikeCount } from "../services/blogs-service";
+import { toast } from "react-toastify";
+import { useBlogContext } from "../context-api/BlogContext";
+import * as actionTypes from "../context-api/actionType";
 
 const BlogDetail = () => {
   const { blogId } = useParams();
-
+  // const blogsContextData = useContext(BlogsContext);
+  const { state, dispatch } = useBlogContext();
   const blogs = useSelector((state) => state?.blogs?.blogs);
-  const dispatch = useDispatch();
+  const reduxDispatch = useDispatch();
   const navigate = useNavigate();
 
-  if (blogs?.length == 0) {
+  if (blogs?.length === 0) {
     // state's list is empty
-    dispatch(getBlogs());
+    reduxDispatch(getBlogs());
   }
 
+  // Finding current blog on the redux state
   const blog = blogs?.find((blog) => blog?._id === blogId);
+
+  // Finding current blog using contextApi
+  const currentBlogtUsingContext = state?.blogs?.find((blog) => blog?._id === blogId);
 
   if (!blog) {
     navigate("/");
@@ -39,18 +49,53 @@ const BlogDetail = () => {
 
   console.log("Blog: ", blog);
 
+  // Update Like count function. both: like & dislike
+  const updateLikeCount = async (blogId, ctx) => {
+    if (ctx === 'like'){
+      await updateBlogLikeCount(blogId);
+      dispatch({ type: actionTypes.INCREMENT_LIKES, payload: blogId });
+    }else {
+      // False params tells function to decrement like count
+      await updateBlogLikeCount(blogId,false); 
+      dispatch({ type: actionTypes.DECREMENT_LIKES, payload: blogId });
+    }
+  }
+
+  // Delete Modal
   const [deleteModalIsOpen, setdeleteModalIsOpen] = useState(false);
+
+  const toggle = () => setdeleteModalIsOpen(!deleteModalIsOpen);
+
+  const confirmDeleteBlog = (blogId) => {
+    // invoke server to delete this blog
+    deleteBlog(blogId)
+      .then((res) => {
+        if (res?.acknowledged) {
+          toast.success("Blog deleted successfully !");
+          navigate("/blog/list");
+        }
+      })
+      .catch((error) => {
+        toast.error("Something went wrong !");
+        console.warn("Error while deleting blog: ", error);
+      });
+  };
+
+  // CSS Props for the UI
   const modalProps = {
     centered: true,
   };
 
-
-  const toggle = () => setdeleteModalIsOpen(!deleteModalIsOpen);
-
-  const deleteBlog = () => {
-    console.log("deleting blog...");
-    // invoke server to delete this blog
+  const badgeStyle = {
+    fontSize: "1rem",
+    padding: "0.2rem 0.5rem",
   };
+
+  const containerStyle = {
+    display: "flex",
+    alignItems: "center",
+  };
+  // CSS props ends here
 
   return (
     <div>
@@ -72,9 +117,7 @@ const BlogDetail = () => {
                             size: 10,
                           }}
                         >
-                          <small className="text-muted">
-                            Blog Posted
-                          </small>
+                          <small className="text-muted">Blog Posted</small>
                         </Col>
                         <Col
                           md={{
@@ -126,7 +169,7 @@ const BlogDetail = () => {
                               <Button
                                 outline
                                 color="danger"
-                                onClick={deleteBlog}
+                                onClick={() => confirmDeleteBlog(blog?._id)}
                               >
                                 Delete
                               </Button>{" "}
@@ -159,7 +202,63 @@ const BlogDetail = () => {
                     ></div>
 
                     <CardTitle className="mt-3">
-                      <h1>{blog?.title} </h1>
+                      <Row>
+                        <Col
+                          md={{
+                            size: 10,
+                          }}
+                        >
+                          <div style={containerStyle}>
+                            <h1>{blog?.title}</h1>
+                            <Badge
+                              className="mx-2"
+                              style={badgeStyle}
+                              pill
+                              color="primary"
+                            >
+                              likes: {currentBlogtUsingContext?.likes}
+                            </Badge>
+                          </div>
+                        </Col>
+                        <Col
+                          md={{
+                            size: 2,
+                          }}
+                        >
+                          <Button
+                            style={{ borderRadius: "10%" }}
+                            outline
+                            className="m-1"
+                            color="success"
+                            onClick={()=>updateLikeCount(currentBlogtUsingContext?._id, "like")}
+                          >
+                            <div style={containerStyle}>
+                              <span
+                                style={{ fontSize: "1.2rem" }}
+                                className="material-symbols-rounded"
+                              >
+                                thumb_up
+                              </span>
+                            </div>
+                          </Button>
+                          <Button
+                            style={{ borderRadius: "10%" }}
+                            onClick={()=>updateLikeCount(currentBlogtUsingContext?._id, "dislike")}
+                            outline
+                            className="m-1"
+                            color="dark"
+                          >
+                            <div style={containerStyle}>
+                              <span
+                                style={{ fontSize: "1.2rem" }}
+                                className="material-symbols-rounded"
+                              >
+                                thumb_down
+                              </span>
+                            </div>
+                          </Button>
+                        </Col>
+                      </Row>
                     </CardTitle>
                     <div
                       className="image-container  mt-4 shadow  "
