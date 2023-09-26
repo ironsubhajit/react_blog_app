@@ -1,5 +1,4 @@
 # Ignore backend for now
-backend-server/
 
 # Dependency directories
 */node_modules
@@ -15,12 +14,6 @@ backend-server/
 
 # testing
 */coverage
-
-# Environment files
-*/.env.local
-*/.env.development
-*/.env.test
-*/.env.production
 
 # Log files
 */*.log
