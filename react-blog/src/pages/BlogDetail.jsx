@@ -18,8 +18,8 @@ import {
 } from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { getBlogs } from "../redux-state/actions/actions";
-import { deleteBlog, updateBlogLikeCount } from "../services/blogs-service";
+import { deleteBlog, getBlogs } from "../redux-state/actions/actions";
+import { updateBlogLikeCount } from "../services/blogs-service";
 import { toast } from "react-toastify";
 import { useBlogContext } from "../context-api/BlogContext";
 import * as actionTypes from "../context-api/actionType";
@@ -41,7 +41,9 @@ const BlogDetail = () => {
   const blog = blogs?.find((blog) => blog?._id === blogId);
 
   // Finding current blog using contextApi
-  const currentBlogtUsingContext = state?.blogs?.find((blog) => blog?._id === blogId);
+  const currentBlogtUsingContext = state?.blogs?.find(
+    (blog) => blog?._id === blogId
+  );
 
   if (!blog) {
     navigate("/");
@@ -51,34 +53,30 @@ const BlogDetail = () => {
 
   // Update Like count function. both: like & dislike
   const updateLikeCount = async (blogId, ctx) => {
-    if (ctx === 'like'){
+    if (ctx === "like") {
       await updateBlogLikeCount(blogId);
       dispatch({ type: actionTypes.INCREMENT_LIKES, payload: blogId });
-    }else {
+    } else {
       // False params tells function to decrement like count
-      await updateBlogLikeCount(blogId,false); 
+      await updateBlogLikeCount(blogId, false);
       dispatch({ type: actionTypes.DECREMENT_LIKES, payload: blogId });
     }
-  }
+  };
 
   // Delete Modal
   const [deleteModalIsOpen, setdeleteModalIsOpen] = useState(false);
 
   const toggle = () => setdeleteModalIsOpen(!deleteModalIsOpen);
 
-  const confirmDeleteBlog = (blogId) => {
-    // invoke server to delete this blog
-    deleteBlog(blogId)
-      .then((res) => {
-        if (res?.acknowledged) {
-          toast.success("Blog deleted successfully !");
-          navigate("/blog/list");
-        }
-      })
-      .catch((error) => {
-        toast.error("Something went wrong !");
-        console.warn("Error while deleting blog: ", error);
-      });
+  const confirmDeleteBlog = async (blogId) => {
+    try {
+      await reduxDispatch(deleteBlog(blogId));
+      toast.success("Blog deleted successfully !");
+      navigate("/blog/list");
+    } catch (error) {
+      toast.error("Something went wrong !");
+      console.warn("Error while deleting blog: ", error);
+    }
   };
 
   // CSS Props for the UI
@@ -230,7 +228,12 @@ const BlogDetail = () => {
                             outline
                             className="m-1"
                             color="success"
-                            onClick={()=>updateLikeCount(currentBlogtUsingContext?._id, "like")}
+                            onClick={() =>
+                              updateLikeCount(
+                                currentBlogtUsingContext?._id,
+                                "like"
+                              )
+                            }
                           >
                             <div style={containerStyle}>
                               <span
@@ -243,7 +246,12 @@ const BlogDetail = () => {
                           </Button>
                           <Button
                             style={{ borderRadius: "10%" }}
-                            onClick={()=>updateLikeCount(currentBlogtUsingContext?._id, "dislike")}
+                            onClick={() =>
+                              updateLikeCount(
+                                currentBlogtUsingContext?._id,
+                                "dislike"
+                              )
+                            }
                             outline
                             className="m-1"
                             color="dark"

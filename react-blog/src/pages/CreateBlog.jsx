@@ -116,10 +116,7 @@ const CreateBlog = () => {
   // Submit form
   const submitNewBlogForm = async (event) => {
     event.preventDefault();
-    console.log(newBlogStateData);
-    // Todo: update userid
-    setNewBlogStateData({ ...newBlogStateData });
-    console.log(newBlogStateData);
+    setNewBlogStateData({ ...newBlogStateData, likes: 0 });
 
     await dispatch(addBlog(newBlogStateData));
 
@@ -129,7 +126,7 @@ const CreateBlog = () => {
     } else {
       setNewBlogStateData({ ...defaultNewBlogDataState });
       toast.success(`${newBlogStateData?.title} - New blog created !`);
-      navigate("/blogs/list");
+      navigate("/blog/list");
     }
   };
 

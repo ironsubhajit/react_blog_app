@@ -173,8 +173,6 @@ const Signup = () => {
               <CardTitle tag="h3">Sign Up</CardTitle>
               <CardSubtitle className="mb-2" tag="h6">
                 Please sign up to create new blogs !
-                <br />
-                {JSON.stringify(errorStateData)}
               </CardSubtitle>
             </CardHeader>
             <CardBody>

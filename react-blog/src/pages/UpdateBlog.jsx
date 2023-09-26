@@ -15,9 +15,9 @@ import {
   Label,
   Input,
 } from "reactstrap";
-import { addBlog, editBlog } from "../services/blogs-service";
+// import { editBlog } from "../services/blogs-service";
 import { useDispatch, useSelector } from "react-redux";
-import { getBlog, getBlogs } from "../redux-state/actions/actions";
+import { editBlog, getBlogs } from "../redux-state/actions/actions";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -28,7 +28,7 @@ const UpdateBlog = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  if (blogs?.length == 0) {
+  if (blogs?.length === 0) {
     // populating state
     dispatch(getBlogs());
   }
@@ -56,7 +56,7 @@ const UpdateBlog = () => {
 
   // User state data
   const [newBlogStateData, setNewBlogStateData] = useState({
-    ...defaultNewBlogDataState,
+    ...blog,
   });
 
   // Error state
@@ -98,34 +98,19 @@ const UpdateBlog = () => {
   const handleInputChange = (event, key) => {
     setNewBlogStateData({ ...newBlogStateData, [key]: event?.target?.value });
     blogFormValidator(key);
-    console.log(JSON.stringify(errorStateData));
   };
 
   // Reset user signup form
   const resetSignUpForm = () => {
-    setNewBlogStateData({ ...blog });
+    setNewBlogStateData({ ...defaultNewBlogDataState });
   };
 
   // Submit signup form
-  const submitBlogForm = (event) => {
+  const submitBlogForm = async (event) => {
     event.preventDefault();
-    console.log(newBlogStateData);
-    // Todo: update userid
-    setNewBlogStateData({ ...newBlogStateData });
-    console.log(newBlogStateData);
-
-    // invoke server api
-    editBlog(newBlogStateData)
-      .then((res) => {
-        console.log(res);
-        toast.success("Blog updated successfully!");
-        // set form to default
-        // navigate("/blogs/list");
-      })
-      .catch((error) => {
-        console.log("error: ", error);
-        toast.error(error);
-      });
+    await dispatch(editBlog(newBlogStateData));
+    toast.success("Blog updated successfully!");
+    navigate(`/blog/${blogId}/view`);
   };
   return (
     <div>
@@ -142,11 +127,10 @@ const UpdateBlog = () => {
               <CardTitle tag="h3">Edit Blog blog</CardTitle>
               <CardSubtitle className="mb-2" tag="h6">
                 Please fill the details to edit the blog blog ! <br />
-                {/* {JSON.stringify(newBlogStateData)} */}
               </CardSubtitle>
             </CardHeader>
             <CardBody>
-              {/* Add new blog form */}
+              {/* blog form */}
               <Form onSubmit={(e) => submitBlogForm(e)}>
                 {/* title field */}
                 <FormGroup>
@@ -158,7 +142,7 @@ const UpdateBlog = () => {
                     type="text"
                     required
                     onChange={(e) => handleInputChange(e, "title")}
-                    value={blog?.title}
+                    defaultValue={blog?.title}
                     invalid={
                       errorStateData?.titleErrors?.length > 0 ? true : false
                     }
@@ -175,7 +159,7 @@ const UpdateBlog = () => {
                     type="text"
                     required
                     onChange={(e) => handleInputChange(e, "category")}
-                    value={blog?.category}
+                    defaultValue={blog?.category}
                   />
                 </FormGroup>
                 {/* image url field */}
@@ -188,7 +172,7 @@ const UpdateBlog = () => {
                     type="url"
                     required
                     onChange={(e) => handleInputChange(e, "imageUrl")}
-                    value={blog?.imageUrl}
+                    defaultValue={blog?.imageUrl}
                   />
                   <FormFeedback>Error in this field</FormFeedback>
                 </FormGroup>
@@ -201,7 +185,7 @@ const UpdateBlog = () => {
                     type="textarea"
                     placeholder="Write blog content here..."
                     onChange={(e) => handleInputChange(e, "content")}
-                    value={blog?.content}
+                    defaultValue={blog?.content}
                     invalid={
                       errorStateData?.contentErrors?.length > 0 ? true : false
                     }
@@ -219,7 +203,7 @@ const UpdateBlog = () => {
                   <Container className="text-center">
                     {/* publish btn */}
                     <Button color="dark" type="submit" className="m-1">
-                      Publish
+                      Update
                     </Button>
                     {/* Reset btn */}
                     <Button

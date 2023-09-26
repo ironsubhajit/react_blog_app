@@ -171,10 +171,6 @@ const Login = () => {
               <CardTitle tag="h3">Login</CardTitle>
               <CardSubtitle className="mb-2" tag="h6">
                 Please login to create new blogs !
-                <br />
-                {JSON.stringify(errorStateData)}
-                <br />
-                {JSON.stringify(formStateData)}
               </CardSubtitle>
             </CardHeader>
             <CardBody>

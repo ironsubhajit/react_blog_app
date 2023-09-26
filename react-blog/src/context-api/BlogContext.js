@@ -43,7 +43,7 @@ export const BlogContextProvider = ({ children }) => {
     const fetchData = async () => {
       const response = await blogsList();
       const blogsData = response;
-      dispatch({ type: SET_BLOGS, payload: blogsData });
+      dispatch({ type: actionTypes.SET_BLOGS, payload: blogsData });
     };
 
     fetchData();

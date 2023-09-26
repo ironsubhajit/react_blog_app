@@ -71,12 +71,55 @@ export const addBlog = (newBlogData) => {
   };
 };
 
-// export const editBlog = (updatedBlogData) => ({
-//   type: actionType.EDIT_BLOG,
-//   payload: updatedBlogData,
-// });
+export const editBlog = (updatedBlogData) => {
+  return async (dispatch) => {
+    dispatch({
+      type: actionType?.API_REQUEST,
+    });
+    await blogService?.editBlog(updatedBlogData)
+      .then((res) => {
+        console.log(res);
+        dispatch({
+          type: actionType?.EDIT_BLOG,
+          payload: updatedBlogData,
+        });
+      })
+      .catch((error) => {
+        console.warn("error: ", error);
+        // Adding error to state's error field
+        dispatch({
+          type: actionType.ERROR,
+          payload: error
+        })
+      });
+  };
+};
 
-// export const deleteBlog = (blogId) => ({
-//   type: actionType.DELETE_BLOG,
-//   payload: blogId,
-// });
+export const deleteBlog = (blogId) => {
+  return async (dispatch) => {
+    dispatch({
+      type: actionType?.API_REQUEST,
+    });
+    await blogService?.deleteBlog(blogId)
+      .then((res) => {
+        console.log(res);
+        if (res?.acknowledged) {
+          dispatch({
+            type: actionType?.DELETE_BLOG,
+            payload: blogId,
+          });
+        }
+      })
+      .catch((error) => {
+        console.warn("error: ", error);
+        // Adding error to state's error field
+        dispatch({
+          type: actionType.ERROR,
+          payload: error
+        })
+      });
+  };
+};
+
+
+
