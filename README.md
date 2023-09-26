@@ -17,6 +17,7 @@ ReactBlogs is a React application for managing and displaying a collection of bl
 - Redux: A predictable state container for managing application state.
 - Context api
 - React Router: A routing library for React applications.
+- Reactstrap - for styling
 - Express - for backend
 - MongoDB - for Online DB
 
