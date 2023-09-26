@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Base from "../components/Base";
 import {
   NavLink as ReactNavLink,
@@ -17,7 +17,6 @@ import {
 } from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { getBlogs } from "../redux-state/actions/actions";
 
 const BlogDetail = () => {
@@ -25,6 +24,7 @@ const BlogDetail = () => {
 
   const blogs = useSelector((state) => state?.blogs?.blogs);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   if (blogs?.length == 0) {
     // state's list is empty
@@ -34,7 +34,6 @@ const BlogDetail = () => {
   const blog = blogs?.find((blog) => blog?._id === blogId);
 
   if (!blog) {
-    toast.error("No blog found!");
     navigate("/");
   }
 
@@ -44,7 +43,7 @@ const BlogDetail = () => {
   const modalProps = {
     centered: true,
   };
-  const navigate = useNavigate();
+
 
   const toggle = () => setdeleteModalIsOpen(!deleteModalIsOpen);
 
@@ -74,7 +73,7 @@ const BlogDetail = () => {
                           }}
                         >
                           <small className="text-muted">
-                            Posted by @{blog?._id}
+                            Blog Posted
                           </small>
                         </Col>
                         <Col
@@ -85,14 +84,14 @@ const BlogDetail = () => {
                           <Button
                             style={{ borderRadius: "30%" }}
                             outline
-                            className="mx-1"
+                            className="m-1"
                             color="dark"
                             tag={ReactNavLink}
                             to={`/blog/${blog?._id}/edit`}
                           >
                             <span
                               style={{ fontSize: "1rem" }}
-                              class="material-symbols-rounded"
+                              className="material-symbols-rounded"
                             >
                               edit
                             </span>
@@ -100,13 +99,13 @@ const BlogDetail = () => {
                           <Button
                             style={{ borderRadius: "30%" }}
                             outline
-                            className="mx-1"
+                            className="m-1"
                             color="danger"
                             onClick={toggle}
                           >
                             <span
                               style={{ fontSize: "1.2rem" }}
-                              class="material-symbols-rounded"
+                              className="material-symbols-rounded"
                             >
                               delete
                             </span>

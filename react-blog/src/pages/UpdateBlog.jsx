@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Base from "../components/Base";
 import validator from "validator";
 import {
@@ -15,22 +15,43 @@ import {
   Label,
   Input,
 } from "reactstrap";
-import { addBlog } from "../services/blogs-service";
-
+import { addBlog, editBlog } from "../services/blogs-service";
+import { useDispatch, useSelector } from "react-redux";
+import { getBlog, getBlogs } from "../redux-state/actions/actions";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const UpdateBlog = () => {
+  const { blogId } = useParams();
+
+  const blogs = useSelector((state) => state?.blogs?.blogs);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  if (blogs?.length == 0) {
+    // populating state
+    dispatch(getBlogs());
+  }
+
+  const blog = blogs?.find((blog) => blog?._id === blogId);
+
+  if (!blog) {
+    navigate("/");
+  }
+
   const defaultNewBlogDataState = {
+    _id: "",
     title: "",
     imageUrl: "",
     category: "",
     content: "",
-    likes: 0,
+    likes: "",
     userId: "",
   };
 
   const defaultErrorState = {
     titleErrors: [],
-    contentErrors: []
+    contentErrors: [],
   };
 
   // User state data
@@ -49,22 +70,28 @@ const UpdateBlog = () => {
     if (key === "title") {
       if (
         validator?.isEmpty(newBlogStateData?.[key]) ||
-        (newBlogStateData?.[key]?.length < 3 )
+        newBlogStateData?.[key]?.length < 3
       ) {
-        setErrorStateData({ ...errorStateData, titleErrors: ["Name must be at least 4 characters long"]})
+        setErrorStateData({
+          ...errorStateData,
+          titleErrors: ["Name must be at least 4 characters long"],
+        });
       } else {
-        setErrorStateData({ ...errorStateData, titleErrors: []})
+        setErrorStateData({ ...errorStateData, titleErrors: [] });
       }
     }
     // Blog content - length validation
     if (key === "content") {
       if (!validator?.isLength(newBlogStateData?.[key], { min: 49 })) {
-        setErrorStateData({ ...errorStateData, contentErrors: ["Blog content must be at least 50 characters long"]})
+        setErrorStateData({
+          ...errorStateData,
+          contentErrors: ["Blog content must be at least 50 characters long"],
+        });
       } else {
-        setErrorStateData({ ...errorStateData, contentErrors: []})
+        setErrorStateData({ ...errorStateData, contentErrors: [] });
       }
     }
-    return ;
+    return;
   };
 
   // Set changed input field value in the user state data
@@ -76,7 +103,7 @@ const UpdateBlog = () => {
 
   // Reset user signup form
   const resetSignUpForm = () => {
-    setNewBlogStateData({ ...defaultNewBlogDataState });
+    setNewBlogStateData({ ...blog });
   };
 
   // Submit signup form
@@ -84,21 +111,21 @@ const UpdateBlog = () => {
     event.preventDefault();
     console.log(newBlogStateData);
     // Todo: update userid
-    setNewBlogStateData({...newBlogStateData, userId: ["64fc7085028944400b3449e3"]})
+    setNewBlogStateData({ ...newBlogStateData });
     console.log(newBlogStateData);
+
     // invoke server api
-    addBlog(newBlogStateData)
+    editBlog(newBlogStateData)
       .then((res) => {
         console.log(res);
-        console.log("Blog added successfully");
+        toast.success("Blog updated successfully!");
         // set form to default
-        setNewBlogStateData({ ...defaultNewBlogDataState });
-        // Navigate("/blogs");
+        // navigate("/blogs/list");
       })
       .catch((error) => {
         console.log("error: ", error);
+        toast.error(error);
       });
-
   };
   return (
     <div>
@@ -112,10 +139,10 @@ const UpdateBlog = () => {
             className="m-2 shadow"
           >
             <CardHeader>
-              <CardTitle tag="h3">Edit Blog Post</CardTitle>
+              <CardTitle tag="h3">Edit Blog blog</CardTitle>
               <CardSubtitle className="mb-2" tag="h6">
-                Please fill the details to edit the blog post ! <br />
-                {JSON.stringify(newBlogStateData)}
+                Please fill the details to edit the blog blog ! <br />
+                {/* {JSON.stringify(newBlogStateData)} */}
               </CardSubtitle>
             </CardHeader>
             <CardBody>
@@ -131,10 +158,12 @@ const UpdateBlog = () => {
                     type="text"
                     required
                     onChange={(e) => handleInputChange(e, "title")}
-                    value={newBlogStateData?.title}
-                    invalid={ errorStateData?.titleErrors?.length > 0 ? true : false }
+                    value={blog?.title}
+                    invalid={
+                      errorStateData?.titleErrors?.length > 0 ? true : false
+                    }
                   />
-                  <FormFeedback>{ errorStateData?.titleErrors[0] }</FormFeedback>
+                  <FormFeedback>{errorStateData?.titleErrors[0]}</FormFeedback>
                 </FormGroup>
                 {/* Category field */}
                 <FormGroup>
@@ -146,9 +175,8 @@ const UpdateBlog = () => {
                     type="text"
                     required
                     onChange={(e) => handleInputChange(e, "category")}
-                    value={newBlogStateData?.category}
+                    value={blog?.category}
                   />
-                  
                 </FormGroup>
                 {/* image url field */}
                 <FormGroup>
@@ -160,7 +188,7 @@ const UpdateBlog = () => {
                     type="url"
                     required
                     onChange={(e) => handleInputChange(e, "imageUrl")}
-                    value={newBlogStateData?.imageUrl}
+                    value={blog?.imageUrl}
                   />
                   <FormFeedback>Error in this field</FormFeedback>
                 </FormGroup>
@@ -173,24 +201,24 @@ const UpdateBlog = () => {
                     type="textarea"
                     placeholder="Write blog content here..."
                     onChange={(e) => handleInputChange(e, "content")}
-                    value={newBlogStateData?.content}
-                    invalid={ errorStateData?.contentErrors?.length > 0 ? true : false }
+                    value={blog?.content}
+                    invalid={
+                      errorStateData?.contentErrors?.length > 0 ? true : false
+                    }
                     style={{
                       height: "10rem",
                       overflowY: "visible",
                     }}
                   />
-                  <FormFeedback>{  errorStateData?.contentErrors[0] }</FormFeedback>
+                  <FormFeedback>
+                    {errorStateData?.contentErrors[0]}
+                  </FormFeedback>
                 </FormGroup>
 
                 <Container className="button-section d-flex flex-column align-items-center">
                   <Container className="text-center">
                     {/* publish btn */}
-                    <Button
-                      color="dark"
-                      type="submit"
-                      className="m-1"
-                    >
+                    <Button color="dark" type="submit" className="m-1">
                       Publish
                     </Button>
                     {/* Reset btn */}

@@ -15,6 +15,8 @@ import {
 import { NavLink as ReactNavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getBlogs } from "../redux-state/actions/actions";
+import { GET_BLOG } from "../redux-state/actions/action-types";
+
 
 const BlogsList = () => {
 
@@ -27,6 +29,12 @@ const BlogsList = () => {
     dispatch(getBlogs());
   }, [dispatch]);
 
+  const setSelectedBlogData = (blog) => {
+    dispatch({
+      type: GET_BLOG,
+      payload: blog,
+    });
+  }
 
   return (
     <div>
@@ -64,6 +72,7 @@ const BlogsList = () => {
                       width: "100%",
                     }}
                     color="dark"
+                    onClick={() => setSelectedBlogData(card)}
                   >
                     <NavLink tag={ReactNavLink} to={`/blog/${card?._id}/view`}>
                       Read More

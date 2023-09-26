@@ -6,3 +6,8 @@ export const ADD_BLOG_SUCCESS = "ADD_BLOG_SUCCESS";
 export const ADD_BLOG_ERROR = "ADD_BLOG_ERROR";
 export const EDIT_BLOG = "EDIT_BLOG";
 export const DELETE_BLOG = "DELETE_BLOG";
+
+
+export const API_REQUEST = "API_REQUEST";
+export const GET_BLOG = "GET_BLOG";
+export const ERROR = "ERROR";

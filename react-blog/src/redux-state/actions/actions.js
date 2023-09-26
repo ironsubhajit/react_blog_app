@@ -8,6 +8,7 @@ export const getBlogs = () => {
       type: actionType.GET_BLOGS_REQUEST,
     });
     try {
+      // Service call
       const response = await blogService?.blogsList();
       dispatch({
         type: actionType.GET_BLOGS_SUCCESS,
@@ -17,6 +18,28 @@ export const getBlogs = () => {
       // Handling any errors
       dispatch({
         type: actionType.GET_BLOGS_ERROR,
+        error,
+      });
+    }
+  };
+};
+
+export const getBlog = (blogId) => {
+  return async (dispatch) => {
+    dispatch({
+      type: actionType.API_REQUEST
+    });
+    try {
+      // Service Call
+      const response = await blogService?.getBlog(blogId);
+      dispatch({
+        type: actionType.GET_BLOG,
+        payload: response,
+      });
+    } catch (error) {
+      // Handling any errors
+      dispatch({
+        type: actionType.ERROR,
         error,
       });
     }
@@ -47,11 +70,6 @@ export const addBlog = (newBlogData) => {
       });
   };
 };
-
-// export const addBlog = (newBlogData) => ({
-//   type: actionType.ADD_BLOG,
-//   payload: newBlogData,
-// });
 
 // export const editBlog = (updatedBlogData) => ({
 //   type: actionType.EDIT_BLOG,
