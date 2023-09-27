@@ -13,7 +13,7 @@ import BlogsList from "./pages/BlogsList";
 import CreateBlog from "./pages/CreateBlog";
 import UpdateBlog from "./pages/UpdateBlog";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Signup from "./pages/signup";
 import BlogDetail from "./pages/BlogDetail";
 import Blog from "./pages/Blog";
 import { Provider } from "react-redux";
