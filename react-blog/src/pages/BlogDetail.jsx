@@ -23,6 +23,7 @@ import { updateBlogLikeCount } from "../services/blogs-service";
 import { toast } from "react-toastify";
 import { useBlogContext } from "../context-api/BlogContext";
 import * as actionTypes from "../context-api/actionType";
+import { getUserDetails } from "../services/user-service";
 
 const BlogDetail = () => {
   const { blogId } = useParams();
@@ -31,6 +32,7 @@ const BlogDetail = () => {
   const blogs = useSelector((state) => state?.blogs?.blogs);
   const reduxDispatch = useDispatch();
   const navigate = useNavigate();
+  const loggedInUser = getUserDetails();
 
   if (blogs?.length === 0) {
     // state's list is empty
@@ -117,70 +119,73 @@ const BlogDetail = () => {
                         >
                           <small className="text-muted">Blog Posted</small>
                         </Col>
-                        <Col
-                          md={{
-                            size: 2,
-                          }}
-                        >
-                          <Button
-                            style={{ borderRadius: "30%" }}
-                            outline
-                            className="m-1"
-                            color="dark"
-                            tag={ReactNavLink}
-                            to={`/blog/${blog?._id}/edit`}
+                        {/* Checking only blog owner can edit or delete post */}
+                        {blog?.userId == loggedInUser?._id && (
+                          <Col
+                            md={{
+                              size: 2,
+                            }}
                           >
-                            <span
-                              style={{ fontSize: "1rem" }}
-                              className="material-symbols-rounded"
+                            <Button
+                              style={{ borderRadius: "30%" }}
+                              outline
+                              className="m-1"
+                              color="dark"
+                              tag={ReactNavLink}
+                              to={`/blog/${blog?._id}/edit`}
                             >
-                              edit
-                            </span>
-                          </Button>
-                          <Button
-                            style={{ borderRadius: "30%" }}
-                            outline
-                            className="m-1"
-                            color="danger"
-                            onClick={toggle}
-                          >
-                            <span
-                              style={{ fontSize: "1.2rem" }}
-                              className="material-symbols-rounded"
+                              <span
+                                style={{ fontSize: "1rem" }}
+                                className="material-symbols-rounded"
+                              >
+                                edit
+                              </span>
+                            </Button>
+                            <Button
+                              style={{ borderRadius: "30%" }}
+                              outline
+                              className="m-1"
+                              color="danger"
+                              onClick={toggle}
                             >
-                              delete
-                            </span>
-                          </Button>
-                          {/* Delete Confirm modal */}
-                          <Modal
-                            isOpen={deleteModalIsOpen}
-                            toggle={toggle}
-                            {...modalProps}
-                          >
-                            <ModalHeader toggle={toggle}>
-                              Blog Delete Confirmation
-                            </ModalHeader>
-                            <ModalBody>
-                              Are you sure you want to delete this blog post ?
-                            </ModalBody>
-                            <ModalFooter>
-                              <Button
-                                outline
-                                color="danger"
-                                onClick={() => confirmDeleteBlog(blog?._id)}
+                              <span
+                                style={{ fontSize: "1.2rem" }}
+                                className="material-symbols-rounded"
                               >
-                                Delete
-                              </Button>{" "}
-                              <Button
-                                outline
-                                color="secondary"
-                                onClick={toggle}
-                              >
-                                Cancel
-                              </Button>
-                            </ModalFooter>
-                          </Modal>
-                        </Col>
+                                delete
+                              </span>
+                            </Button>
+                            {/* Delete Confirm modal */}
+                            <Modal
+                              isOpen={deleteModalIsOpen}
+                              toggle={toggle}
+                              {...modalProps}
+                            >
+                              <ModalHeader toggle={toggle}>
+                                Blog Delete Confirmation
+                              </ModalHeader>
+                              <ModalBody>
+                                Are you sure you want to delete this blog post ?
+                              </ModalBody>
+                              <ModalFooter>
+                                <Button
+                                  outline
+                                  color="danger"
+                                  onClick={() => confirmDeleteBlog(blog?._id)}
+                                >
+                                  Delete
+                                </Button>{" "}
+                                <Button
+                                  outline
+                                  color="secondary"
+                                  onClick={toggle}
+                                >
+                                  Cancel
+                                </Button>
+                              </ModalFooter>
+                            </Modal>
+                          </Col>
+                        )}
                       </Row>
                     </CardText>
 
