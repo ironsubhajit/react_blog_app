@@ -49,89 +49,58 @@ const Signup = () => {
     ...defaultErrorState,
   });
 
-  // signup validators
-
-  const signupFormValidator = () => {
-    setErrorStateData({ ...defaultErrorState });
+  // form validators - client side
+  const formValidator = (key) => {
+    // email - validation
+    if (key === "email") {
+      if (!validator.isEmail(userStateData?.[key])) {
+        setErrorStateData({
+          ...errorStateData,
+          emailError: ["Invalid email address"],
+          isError: [true],
+        });
+      } else {
+        setErrorStateData({
+          ...errorStateData,
+          emailError: [],
+          isError: [false],
+        });
+      }
+    }
     // Name - length validation
-    if (!validator.isLength(userStateData?.name, { min: 2 })) {
-      setUserStateData({
-        ...errorStateData,
-        nameError: ["Name must be at least 2 characters long"],
-        isError: true,
-      });
+    if (key === "name") {
+      if (!validator?.isLength(userStateData?.[key], { min: 3 })) {
+        setErrorStateData({
+          ...errorStateData,
+          nameError: ["Name must be at least 4 characters long"],
+          isError: [true],
+        });
+      } else {
+        setErrorStateData({
+          ...errorStateData,
+          nameError: [],
+          isError: [false],
+        });
+      }
     }
-    // email validation
-    if (!validator.isEmail(userStateData?.email)) {
-      setUserStateData({
-        ...errorStateData,
-        emailError: ["Invalid email address"],
-        isError: true,
-      });
+    // password - length validation
+    if (key === "password") {
+      if (!validator?.isLength(userStateData?.[key], { min: 5 })) {
+        setErrorStateData({
+          ...errorStateData,
+          passwordError: ["Password must be at least 6 characters long"],
+          isError: [true],
+        });
+      } else {
+        setErrorStateData({
+          ...errorStateData,
+          passwordError: [],
+          isError: [false],
+        });
+      }
     }
-    // Password - length validation
-    if (!validator.isLength(userStateData?.password, { min: 6 })) {
-      setUserStateData({
-        ...errorStateData,
-        passwordError: ["Password must be at least 6 characters long"],
-        isError: true,
-      });
-    }
-    return errorStateData?.isError;
+    return;
   };
-
-    // form validators - client side
-    const formValidator = (key) => {
-      // email - validation
-      if (key === "email") {
-        if (!validator.isEmail(userStateData?.[key])) {
-          setErrorStateData({
-            ...errorStateData,
-            emailError: ["Invalid email address"],
-            isError: [true],
-          });
-        } else {
-          setErrorStateData({
-            ...errorStateData,
-            emailError: [],
-            isError: [false],
-          });
-        }
-      }
-      // Name - length validation
-      if (key === "name") {
-        if (!validator?.isLength(userStateData?.[key], { min: 3 })) {
-          setErrorStateData({
-            ...errorStateData,
-            nameError: ["Name must be at least 4 characters long"],
-            isError: [true],
-          });
-        } else {
-          setErrorStateData({
-            ...errorStateData,
-            nameError: [],
-            isError: [false],
-          });
-        }
-      }
-      // password - length validation
-      if (key === "password") {
-        if (!validator?.isLength(userStateData?.[key], { min: 5 })) {
-          setErrorStateData({
-            ...errorStateData,
-            passwordError: ["Password must be at least 6 characters long"],
-            isError: [true],
-          });
-        } else {
-          setErrorStateData({
-            ...errorStateData,
-            passwordError: [],
-            isError: [false],
-          });
-        }
-      }
-      return;
-    };
 
   // Set changed input field value in the user state data
   const handleInputChange = (event, key) => {
@@ -196,7 +165,7 @@ const Signup = () => {
         navigate("/login");
         toast.success("User registered successfully !!");
         // reset state data
-        setUserStateData({...defaultUserState});
+        setUserStateData({ ...defaultUserState });
       })
       .catch((error) => {
         console.log("error: ");
